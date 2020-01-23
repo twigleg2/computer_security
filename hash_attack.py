@@ -15,18 +15,39 @@ def generateRandomInput():
     return "TODO"
 
 def collisionAttack():
-    pass
+    randomInput = generateRandomInput()
+    hashes = {}
 
 def preimageAttack():
-    pass
+    randomInput = generateRandomInput()
+    hashes = {}
 
 def main():
+    sampleSize = 50
     bitSizes = [8,16,20,24]
+    collisionResults = {bitSizes[0]:0, bitSizes[1]:0, bitSizes[2]:0, bitSizes[3]:0}
+    preimageResults = {bitSizes[0]:0, bitSizes[1]:0, bitSizes[2]:0, bitSizes[3]:0}
 
-    randomInput = generateRandomInput()
-    for attempt in range(50):
-        randomInput += "?"
-        
+    for size in bitSizes:
+        for attempt in range(sampleSize): #collision attack trials
+            collisionResults[bitSizes[size]] += collisionAttack(size)
+            #do 50 attacks, save the results, do some statical analysis
+        for attempt in range(sampleSize): #preimage attack trials
+            preimageResults[bitSizes[size]] += preimageAttack(size)
+    
+    for size in bitSizes:
+        collisionResults[size] /= sampleSize
+        preimageResults[size] /= sampleSize
         
 
-main()
+myset = {1,2,3,4,5,6,7,8,9}
+print(myset)
+print(1 in myset)
+print(0 in myset)
+myset.add(0)
+myset.add(1)
+print(myset)
+print(1 in myset)
+print(0 in myset)
+
+# main()
