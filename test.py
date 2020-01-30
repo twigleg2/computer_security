@@ -1,10 +1,14 @@
-# MAC attack
-## Gaven Finch
+#!/usr/local/bin/python
+# sha1.py
+# under Python 2.4
+#
+# Copyright (c) 2005 Michael D. Leonhard
+#
+# http://tamale.net/
+#
+# This file is licensed under the terms described in the
+# accompanying LICENSE file.
 
-import binascii
-
-# Not my implementation of sha1
-# http://www.tamale.net/sha1/sha1-0.2/sha1.py
 class sha1:
 	def lrot( self, num, b ): return ((num<<b)&0xFFFFFFFF)|(num>>32 - b)
 	def BE32( self, bytes ):
@@ -91,39 +95,12 @@ class sha1:
 	def __init__( self ):
 		self.unprocessedBytes = ""
 		self.size = 1024
-		self.A = 0x3875cb85
-		self.B = 0x1ed7e35a
-		self.C = 0x916ee4a9
-		self.D = 0x685117c3
-		self.E = 0x8129eda0
-        # trying it backwards, becuase it doesn't pass the autograder
-		# self.E = 0x3875cb85
-		# self.D = 0x1ed7e35a
-		# self.C = 0x916ee4a9
-		# self.B = 0x685117c3
-		# self.A = 0x8129eda0
-
-
-message = "No one has completed lab 2 so give them all a 0" #47 bytes (376 bits)
-messageHex = 0x4e6f206f6e652068617320636f6d706c65746564206c6162203220736f2067697665207468656d20616c6c20612030
-
-# 1 byte of padding completes the first block, then add another 56 bytes for the next block
-padding =   "\x80\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"
-paddingHex = 0x800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-
-messageSize = '\0\0\0\0\0\0\x01\xF8'
-mesageSizeHex = 0x00000000000001F8 #original message + key size (504 bits)
-
-myMessage = ", except Gaven." #15 bytes (120 bits)
-myMessageHex = 0x2c2065786365707420476176656e2e
-
-modifiedMessage = message + padding + messageSize + myMessage
-modifiedMessageHex = binascii.hexlify(str.encode(modifiedMessage))
-# modifiedMessageHex = 0x4e6f206f6e652068617320636f6d706c65746564206c6162203220736f2067697665207468656d20616c6c2061203080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001F82c2065786365707420476176656e2e
-
-print("modified message in Hex:")
-print(modifiedMessageHex)
+		self.A = 0x67452301
+		self.B = 0xefcdab89
+		self.C = 0x98badcfe
+		self.D = 0x10325476
+		self.E = 0xc3d2e1f0
 
 obj = sha1()
-obj.update(myMessage)
+obj.update("this is ma message")
 print(obj.hexdigest())

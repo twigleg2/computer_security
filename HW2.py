@@ -1,7 +1,7 @@
 # Gaven Finch
 # HW2
 
-# ^ is XOR
+# ffAdd() is implemented as an XOR oparation, ^
 
 bits = { # bit masks to be used later
     0: 0x1,

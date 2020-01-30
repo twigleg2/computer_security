@@ -1,5 +1,7 @@
 import hashlib
 import sys
+import random
+import string
 
 
 def SHA1_wrapper(input, n): #input string, number of bits
@@ -9,45 +11,69 @@ def SHA1_wrapper(input, n): #input string, number of bits
     digest = hashObject.digest()
     digest_int = int.from_bytes(digest, sys.byteorder)
     masked_digest = digest_int & mask
-    print(hex(masked_digest))   
+    return hex(masked_digest)
 
 def generateRandomInput():
-    return "TODO"
+    alphanumeric = string.ascii_letters + string.digits
+    randomString =  ''.join(random.choice(alphanumeric) for i in range(15))
+    return randomString
 
-def collisionAttack():
-    randomInput = generateRandomInput()
-    hashes = {}
+def collisionAttack(size):
+    message = generateRandomInput()
+    hashes = set()
+    duplicate = False
+    while not duplicate:
+        message += "?"
+        digest = SHA1_wrapper(message, size)
+        if digest in hashes:
+            duplicate = True
+        else:
+            hashes.add(digest)
 
-def preimageAttack():
-    randomInput = generateRandomInput()
-    hashes = {}
+    return len(hashes)
+
+
+def preimageAttack(size):
+    message = generateRandomInput()
+    targetDigest = SHA1_wrapper(message, size)
+    digest = ""
+    counter = 0
+    while digest != targetDigest:
+        counter += 1
+        message += "?"
+        digest = SHA1_wrapper(message, size)
+
+    return counter
+
 
 def main():
     sampleSize = 50
-    bitSizes = [8,16,20,24]
-    collisionResults = {bitSizes[0]:0, bitSizes[1]:0, bitSizes[2]:0, bitSizes[3]:0}
+    bitSizes = [8,10,16,18]
+    collisionResults = {bitSizes[0]:0, bitSizes[1]:0, bitSizes[2]:0, bitSizes[3]:0} # can I use some form of loop to do this?
     preimageResults = {bitSizes[0]:0, bitSizes[1]:0, bitSizes[2]:0, bitSizes[3]:0}
 
     for size in bitSizes:
+        print("attacking with mask size:", end=" ")
+        print(size)
         for attempt in range(sampleSize): #collision attack trials
-            collisionResults[bitSizes[size]] += collisionAttack(size)
+            print("collision test number:", end=" ")
+            print(attempt)
+            collisionResults[size] += collisionAttack(size)
             #do 50 attacks, save the results, do some statical analysis
         for attempt in range(sampleSize): #preimage attack trials
-            preimageResults[bitSizes[size]] += preimageAttack(size)
-    
+            print("preimage test number:", end=" ")
+            print(attempt)
+            preimageResults[size] += preimageAttack(size)
+
     for size in bitSizes:
         collisionResults[size] /= sampleSize
         preimageResults[size] /= sampleSize
-        
 
-myset = {1,2,3,4,5,6,7,8,9}
-print(myset)
-print(1 in myset)
-print(0 in myset)
-myset.add(0)
-myset.add(1)
-print(myset)
-print(1 in myset)
-print(0 in myset)
+    print("collisionResults: ")
+    print(collisionResults)
+    print("preimageResults: ")
+    print(preimageResults)
 
-# main()
+
+main()
+# print(generateRandomInput())
