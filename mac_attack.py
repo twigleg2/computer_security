@@ -87,7 +87,7 @@ class sha1:
 		C = self.hex32(self.C)
 		D = self.hex32(self.D)
 		E = self.hex32(self.E)
-		return A + " " + B + " " + C + " " + D + " " + E
+		return A + B + C + D + E
 	def __init__( self ):
 		self.unprocessedBytes = ""
 		self.size = 1024
@@ -103,21 +103,21 @@ class sha1:
 		# self.B = 0x685117c3
 		# self.A = 0x8129eda0
 
+ogDigest = 0x3875cb851ed7e35a916ee4a9685117c38129eda0
 
-message = "No one has completed lab 2 so give them all a 0" #47 bytes (376 bits)
+# 47 bytes (376 bits) + the key on the front is 16 bytes (128 bits) = 63 bytes (504 bits)
+message = "No one has completed lab 2 so give them all a 0"
 messageHex = 0x4e6f206f6e652068617320636f6d706c65746564206c6162203220736f2067697665207468656d20616c6c20612030
 
-# 1 byte of padding completes the first block, then add another 56 bytes for the next block
-padding =   "\x80\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"
-paddingHex = 0x800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+# 1 byte of padding (0x80) completes the first block, then add another 56 bytes for the next block, reserving the last 8 bytes for the message length
+paddingAndLength =   "\x80\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01\xF8"
+paddingAndLengthHex = 0x80000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001F8
 
-messageSize = '\0\0\0\0\0\0\x01\xF8'
-mesageSizeHex = 0x00000000000001F8 #original message + key size (504 bits)
-
-myMessage = ", except Gaven." #15 bytes (120 bits)
+# 15 bytes (120 bits)
+myMessage = ", except Gaven."
 myMessageHex = 0x2c2065786365707420476176656e2e
 
-modifiedMessage = message + padding + messageSize + myMessage
+modifiedMessage = message + paddingAndLength + myMessage
 modifiedMessageHex = binascii.hexlify(str.encode(modifiedMessage))
 # modifiedMessageHex = 0x4e6f206f6e652068617320636f6d706c65746564206c6162203220736f2067697665207468656d20616c6c2061203080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001F82c2065786365707420476176656e2e
 
@@ -126,4 +126,5 @@ print(modifiedMessageHex)
 
 obj = sha1()
 obj.update(myMessage)
+print("new digest:")
 print(obj.hexdigest())
