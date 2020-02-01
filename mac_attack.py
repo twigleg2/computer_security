@@ -90,7 +90,7 @@ class sha1:
 		return A + B + C + D + E
 	def __init__( self ):
 		self.unprocessedBytes = ""
-		self.size = 1024
+		self.size = 128 # bytes, not bits
 		self.A = 0x3875cb85
 		self.B = 0x1ed7e35a
 		self.C = 0x916ee4a9
@@ -103,28 +103,27 @@ class sha1:
 		# self.B = 0x685117c3
 		# self.A = 0x8129eda0
 
-ogDigest = 0x3875cb851ed7e35a916ee4a9685117c38129eda0
+# ogDigest = 0x3875cb851ed7e35a916ee4a9685117c38129eda0
 
 # 47 bytes (376 bits) + the key on the front is 16 bytes (128 bits) = 63 bytes (504 bits)
-message = "No one has completed lab 2 so give them all a 0"
-messageHex = 0x4e6f206f6e652068617320636f6d706c65746564206c6162203220736f2067697665207468656d20616c6c20612030
+message = b'No one has completed lab 2 so give them all a 0'
+# messageHex = 0x4e6f206f6e652068617320636f6d706c65746564206c6162203220736f2067697665207468656d20616c6c20612030
 
 # 1 byte of padding (0x80) completes the first block, then add another 56 bytes for the next block, reserving the last 8 bytes for the message length
-paddingAndLength =   "\x80\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01\xF8"
-paddingAndLengthHex = 0x80000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001F8
+paddingAndLength =   b'\x80\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01\xF8'
+# paddingAndLengthHex = 0x80000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001F8
 
 # 15 bytes (120 bits)
-myMessage = ", except Gaven."
-myMessageHex = 0x2c2065786365707420476176656e2e
+myMessage = b', except Gaven.'
+# myMessageHex = 0x2c2065786365707420476176656e2e
 
 modifiedMessage = message + paddingAndLength + myMessage
-modifiedMessageHex = binascii.hexlify(str.encode(modifiedMessage))
-# modifiedMessageHex = 0x4e6f206f6e652068617320636f6d706c65746564206c6162203220736f2067697665207468656d20616c6c2061203080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001F82c2065786365707420476176656e2e
+modifiedMessageHex = binascii.hexlify(modifiedMessage)
 
 print("modified message in Hex:")
 print(modifiedMessageHex)
 
 obj = sha1()
-obj.update(myMessage)
+obj.update(myMessage.decode("utf-8"))
 print("new digest:")
 print(obj.hexdigest())
